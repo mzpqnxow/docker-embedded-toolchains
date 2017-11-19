@@ -48,22 +48,24 @@ USER root
 # Create the hardcoded paths that Broadcom has embedded into their toolchains
 RUN mkdir -p /projects/hnd/tools/linux && mkdir -p /opt/brcm
 ADD hndtools-packages/hndtools-mipsel-linux-uclibc-4.2.3.tar.xz /projects/hnd/tools/linux/
-ADD hndtools-packages/hndtools-mipsel-linux-3.2.3.tar.xz /projects/hnd/tools/linux/
+ADD hndtools-packages/hndtools-mipsel-3.2.3.tar.xz /projects/hnd/tools/linux/
 ADD hndtools-packages/hndtools-arm-linux-2.6.36-uclibc-4.5.3.tar.xz /projects/hnd/tools/linux
-
+# WORKDIR /projects/hnd/tools/linux/hndtools-mipsel-linux-3.2.3/
 
 # --- 3.2.3 toolchain workaround ---
 # The 3.2.3 toolchain actually consists of two directories, not the usual single directory
 # To deal with it, extract the tarball and essentially remove/collapse the top level directory
 # to leave the two children directories where the parent was
-RUN mv /projects/hnd/tools/linux/hndtools-mipsel-linux-3.2.3/ \
-	/projects/hnd/tools/linux/hndtools-mipsel-uclibc-3.2.3.tmp
-RUN mv /projects/hnd/tools/linux/hndtools-mipsel-uclibc-3.2.3.tmp/hndtools-mipsel-linux-3.2.3 \
-	/projects/hnd/tools/linux/
-RUN mv /projects/hnd/tools/linux/hndtools-mipsel-uclibc-3.2.3.tmp/hndtools-mipsel-uclibc-3.2.3 \
-	/projects/hnd/tools/linux/
+#RUN mv /projects/hnd/tools/linux/hndtools-mipsel-linux-3.2.3 \
+#       /projects/hnd/tools/linux/hndtools-mipsel-linux-3.2.3.tmp
+
+#RUN mv /projects/hnd/tools/linux/hndtools-mipsel-linux-3.2.3.tmp/hndtools-mipsel-linux-3.2.3 \
+#	/projects/hnd/tools/linux/
+#RUN mv /projects/hnd/tools/linux/hndtools-mipsel-linux-3.2.3.tmp/hndtools-mipsel-uclibc-3.2.3 \
+#	/projects/hnd/tools/linux/
+
 # Delete empty (old) parent directory
-RUN rm -rf /projects/hnd/tools/linux/hndtools-mipsel-uclibc-3.2.3.tmp/
+#RUN rm -rf /projects/hnd/tools/linux/hndtools-mipsel-linux-3.2.3.tmp/
 # Final symlink required because Broadcom hard-coded /opt/brcm into this toolchain
 RUN ln -sf /projects/hnd/tools/linux/hndtools-mipsel-linux-3.2.3/ /opt/brcm/
 
@@ -84,5 +86,5 @@ RUN chown -R toolchain-user.toolchain-user \
 	/projects/hnd/ \
 	/opt/brcm
 
-USER toolchain-user
+#USER toolchain-user
 CMD ["/bin/bash", "--login"]
