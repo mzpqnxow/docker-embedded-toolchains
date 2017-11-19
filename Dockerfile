@@ -47,32 +47,25 @@ USER root
 
 # Create the hardcoded paths that Broadcom has embedded into their toolchains
 RUN mkdir -p /projects/hnd/tools/linux && mkdir -p /opt/brcm
-ADD hndtools-packages/hndtools-mipsel-linux-uclibc-4.2.3.tar.xz /projects/hnd/tools/linux/
-ADD hndtools-packages/hndtools-mipsel-3.2.3.tar.xz /projects/hnd/tools/linux/
-ADD hndtools-packages/hndtools-arm-linux-2.6.36-uclibc-4.5.3.tar.xz /projects/hnd/tools/linux
-# WORKDIR /projects/hnd/tools/linux/hndtools-mipsel-linux-3.2.3/
+ADD toolchain-packages/hndtools-mipsel-linux-uclibc-4.2.3.tar.xz /projects/hnd/tools/linux/
+ADD toolchain-packages/hndtools-mipsel-3.2.3.tar.xz /projects/hnd/tools/linux/
+ADD toolchain-packages/hndtools-arm-linux-2.6.36-uclibc-4.5.3.tar.xz /projects/hnd/tools/linux
+ADD toolchain-packages/arm-linux-oabi-gcc-glibc.tar.xz /projects/hnd/tools/linux/
+ADD toolchain-packages/rsdk-1.5.5-5281-EB-2.6.30-0.9.30.3-110714.tar.xz /projects/hnd/tools/linux/
+ADD toolchain-packages/rsdk-1.3.6-4181-EB-2.6.30-0.9.30.tar.xz /projects/hnd/tools/linux/
+ADD toolchain-packages/rsdk-1.3.6-5281-EB-2.6.30-0.9.30.tar.xz /projects/hnd/tools/linux/
 
-# --- 3.2.3 toolchain workaround ---
-# The 3.2.3 toolchain actually consists of two directories, not the usual single directory
-# To deal with it, extract the tarball and essentially remove/collapse the top level directory
-# to leave the two children directories where the parent was
-#RUN mv /projects/hnd/tools/linux/hndtools-mipsel-linux-3.2.3 \
-#       /projects/hnd/tools/linux/hndtools-mipsel-linux-3.2.3.tmp
 
-#RUN mv /projects/hnd/tools/linux/hndtools-mipsel-linux-3.2.3.tmp/hndtools-mipsel-linux-3.2.3 \
-#	/projects/hnd/tools/linux/
-#RUN mv /projects/hnd/tools/linux/hndtools-mipsel-linux-3.2.3.tmp/hndtools-mipsel-uclibc-3.2.3 \
-#	/projects/hnd/tools/linux/
-
-# Delete empty (old) parent directory
-#RUN rm -rf /projects/hnd/tools/linux/hndtools-mipsel-linux-3.2.3.tmp/
-# Final symlink required because Broadcom hard-coded /opt/brcm into this toolchain
 RUN ln -sf /projects/hnd/tools/linux/hndtools-mipsel-linux-3.2.3/ /opt/brcm/
-
 # Clean up permissions and add some symlinks
 ADD files/activate-generic-toolchain.env /projects/hnd/tools/linux/hndtools-mipsel-linux-3.2.3/activate
 ADD files/activate-generic-toolchain.env /projects/hnd/tools/linux/hndtools-mipsel-linux-uclibc-4.2.3/activate
 ADD files/activate-generic-toolchain.env /projects/hnd/tools/linux/hndtools-arm-linux-2.6.36-uclibc-4.5.3/activate
+ADD files/activate-generic-toolchain.env /projects/hnd/tools/linux/arm-linux-oabi-gcc-glibc/activate
+ADD files/activate-generic-toolchain.env /projects/hnd/tools/linux/rsdk-1.5.5-5281-EB-2.6.30-0.9.30.3-110714/activate
+ADD files/activate-generic-toolchain.env /projects/hnd/tools/linux/rsdk-1.3.6-4181-EB-2.6.30-0.9.30/activate
+ADD files/activate-generic-toolchain.env /projects/hnd/tools/linux/rsdk-1.3.6-5281-EB-2.6.30-0.9.30/activate
+
 ADD files/test-toolchains.sh /home/toolchain-user/
 WORKDIR /home/toolchain-user/toolchains
 RUN ln -sf /projects/hnd/tools/linux/hndtools-mipsel-linux-3.2.3/activate \
@@ -81,6 +74,15 @@ RUN ln -sf /projects/hnd/tools/linux/hndtools-mipsel-linux-uclibc-4.2.3/activate
 	hndtools-mipsel-4.2.3.activate
 RUN ln -sf /projects/hnd/tools/linux/hndtools-arm-linux-2.6.36-uclibc-4.5.3/activate \
 	hndtools-arm-4.5.3.activate
+RUN ln -sf /projects/hnd/tools/linux/arm-linux-oabi-gcc-glibc/activate \
+  arm-oabi.activate
+RUN ln -sf /projects/hnd/tools/linux/rsdk-1.5.5-5281-EB-2.6.30-0.9.30.3-110714/activate \
+  rsdk-1.5.5-5281-lexra.activate
+RUN ln -sf /projects/hnd/tools/linux/rsdk-1.3.6-4181-EB-2.6.30-0.9.30/activate \
+  rsdk-1.3.6-4181-lexra.activate
+RUN ln -sf /projects/hnd/tools/linux/rsdk-1.3.6-5281-EB-2.6.30-0.9.30/activate \
+  rsdk-1.3.6-5281-lexra.activate
+
 RUN chown -R toolchain-user.toolchain-user \
 	/home/toolchain-user \
 	/projects/hnd/ \
