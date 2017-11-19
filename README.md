@@ -1,5 +1,5 @@
 # docker-mipsel-hndtools
-Dockerfile for building a container with multiple versions of `hndtools` toolchains from Broadcom
+Dockerfile for building a container with multiple versions of embedded toolchains including Broadcom hndtools, OpenWRT and MUSL based toolchains
 
 ## Notes
 
